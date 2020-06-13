@@ -1,0 +1,31 @@
+{
+  "name": "covid-management-backend",
+  "version": "1.0.0",
+  "description": "final year capstone",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sparshsamir1993/covid-management-backend.git"
+  },
+  "keywords": [
+    "covid",
+    "management"
+  ],
+  "author": "Sparsh Samir",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sparshsamir1993/covid-management-backend/issues"
+  },
+  "homepage": "https://github.com/sparshsamir1993/covid-management-backend#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-session": "^1.4.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.4",
+    "passport": "^0.4.1"
+  }
+}
