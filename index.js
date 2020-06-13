@@ -12,7 +12,7 @@ app.use(
     keys: [keys.cookieKey],
   })
 );
-
+app.use("/api", require("./routes"));
 app.use(passport.initialize());
 app.use(passport.session());
 const PORT = process.env.PORT || 5050;

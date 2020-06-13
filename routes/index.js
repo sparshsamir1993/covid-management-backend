@@ -1,4 +1,6 @@
+//
 var router = require("express").Router();
-router.use("/user", require("./userRoutes"));
+
+router.use("/v1", require("./v1.0"));
 
 module.exports = router;
