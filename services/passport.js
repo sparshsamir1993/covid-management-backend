@@ -1,8 +1,13 @@
 const passport = require("passport");
 const keys = require("../keys/keys");
-const User = require("../models/Users");
-const JwtStrategy = require("passport-jwt").Strategy,
+const User = require("../models/user");
+const bcrypt = require("bcrypt");
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
+const BCRYPT_SALT_ROUNDS = 12;
+const JWTStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
+const LocalStrategy = require("passport-local").Strategy;
 var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("JWT");
 opts.secretOrKey = "secret";
@@ -28,4 +33,50 @@ passport.use(
     console.log(jwt_payload);
     done(null, {});
   })
+);
+passport.use(
+  "register",
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+      passReqToCallback: true,
+      session: false,
+    },
+    async (req, email, password, done) => {
+      console.log(email);
+      console.log(password);
+
+      try {
+        const user = await User.findOne({
+          where: {
+            [Op.or]: [
+              {
+                email,
+              },
+              { email: req.body.email },
+            ],
+          },
+        });
+        if (user != null) {
+          console.log("username or email already taken");
+          return done(null, false, {
+            message: "username or email already taken",
+          });
+        }
+        bcrypt.hash(password, BCRYPT_SALT_ROUNDS).then((hashedPassword) => {
+          User.create({
+            email,
+            password: hashedPassword,
+            email: req.body.email,
+          }).then((user) => {
+            console.log("user created");
+            return done(null, user);
+          });
+        });
+      } catch (err) {
+        return done(err);
+      }
+    }
+  )
 );

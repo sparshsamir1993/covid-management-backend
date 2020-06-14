@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const keys = require("./keys/keys");
 
 require("./db.js");
+require("./services/passport");
 
 const app = express();
 app.use(bodyParser.json());
@@ -15,8 +16,11 @@ app.use(
     keys: [keys.cookieKey],
   })
 );
-app.use("/api", require("./routes"));
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use("/api", require("./routes"));
+
 const PORT = process.env.PORT || 5050;
 app.listen(PORT);
