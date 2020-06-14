@@ -27,14 +27,6 @@ passport.deserializeUser((id, done) => {
 });
 
 passport.use(
-  "jwt",
-  new JWTStrategy(opts, (jwt_payload, done) => {
-    console.log("here is the token");
-    console.log(jwt_payload);
-    done(null, {});
-  })
-);
-passport.use(
   "register",
   new LocalStrategy(
     {
@@ -79,4 +71,45 @@ passport.use(
       }
     }
   )
+);
+
+passport.use(
+  "login",
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+      session: false,
+    },
+    async (email, password, done) => {
+      try {
+        const user = await User.findOne({
+          where: {
+            email,
+          },
+        });
+        if (user === null) {
+          return done(null, false, { message: "bad username" });
+        }
+        const response = await bcrypt.compare(password, user.password);
+        if (response !== true) {
+          console.log("passwords do not match");
+          return done(null, false, { message: "passwords do not match" });
+        }
+        console.log("user found & authenticated");
+        return done(null, user);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  )
+);
+
+passport.use(
+  "jwt",
+  new JWTStrategy(opts, (jwt_payload, done) => {
+    console.log("here is the token");
+    console.log(jwt_payload);
+    done(null, {});
+  })
 );
