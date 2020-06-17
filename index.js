@@ -6,6 +6,7 @@ const keys = require("./keys/keys");
 
 require("./db.js");
 require("./services/passport");
+require("./services/redis-client");
 
 const app = express();
 app.use(bodyParser.json());

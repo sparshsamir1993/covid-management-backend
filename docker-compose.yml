@@ -8,18 +8,27 @@ services:
       - "/app/node_modules"
     ports:
       - "5050:5050"
+    environment:
+      - REDIS_URL=redis://cache
     depends_on:
       - db
+      - redis
 
   db:
     image: mysql:latest
     restart: always
+    container_name: covidManagementDB
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: covidManagementDB
-      MYSQL_USER: root
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: example
     ports:
       - "3307:3306"
     volumes:
       - ./docker/data/db:/var/lib/mysql
+
+  redis:
+    image: redis
+    container_name: cache
+    expose:
+      - 6379

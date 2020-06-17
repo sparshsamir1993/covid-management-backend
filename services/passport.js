@@ -5,12 +5,13 @@ const bcrypt = require("bcrypt");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const BCRYPT_SALT_ROUNDS = 12;
+const jwt = require("jsonwebtoken");
 const JWTStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
 const LocalStrategy = require("passport-local").Strategy;
 var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("JWT");
-opts.secretOrKey = "secret";
+opts.secretOrKey = "jwt-secret";
 
 const errHandler = (err) => {
   console.log("Error :: " + err);

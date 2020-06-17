@@ -23,9 +23,13 @@ router.post("/login", (req, res, next) => {
             email: req.body.email,
           },
         });
-        const token = jwt.sign({ id: user.id }, jwtSecret.secret, {
-          expiresIn: 60 * 60,
-        });
+        const token = jwt.sign(
+          { id: user.id, email: user.email },
+          jwtSecret.secret,
+          {
+            expiresIn: 120,
+          }
+        );
         res.status(200).send({
           auth: true,
           token,
@@ -53,6 +57,20 @@ router.post("/signup", (req, res, next) => {
         console.log(user);
         res.status(200).send({ message: "user created" });
       });
+    }
+  })(req, res, next);
+});
+const { verifyToken } = require("../../middlewares");
+router.put("/update", verifyToken(), (req, res, next) => {
+  passport.authenticate("jwt", (err, user, info) => {
+    console.log(user);
+
+    if (err) {
+      console.log(err);
+    }
+    if (info !== undefined) {
+      console.error(info.message);
+      res.status(403).send(info.message);
     }
   })(req, res, next);
 });
