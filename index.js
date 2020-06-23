@@ -3,6 +3,7 @@ const cookieSession = require("cookie-session");
 const passport = require("passport");
 const bodyParser = require("body-parser");
 const keys = require("./keys/keys");
+var cors = require("cors");
 
 require("./db.js");
 require("./services/passport");
@@ -17,7 +18,7 @@ app.use(
     keys: [keys.cookieKey],
   })
 );
-
+app.use(cors());
 app.use(passport.initialize());
 app.use(passport.session());
 

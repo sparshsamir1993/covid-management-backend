@@ -6,6 +6,10 @@ const jwtSecret = require("../../config/jwtConfig");
 const { v4: uuid } = require("uuid");
 const redisClient = require("../../services/redis-client");
 
+const errHandler = (err) => {
+  console.log("Error :: " + err);
+};
+
 router.post("/login", (req, res, next) => {
   passport.authenticate("login", async (err, users, info) => {
     if (err) {
@@ -36,7 +40,7 @@ router.post("/login", (req, res, next) => {
           { id: user.id, email: user.email },
           jwtSecret.secret,
           {
-            expiresIn: 120,
+            expiresIn: 10,
           }
         );
         res.status(200).send({
@@ -66,14 +70,14 @@ router.post("/signup", (req, res, next) => {
       // console.log(user);
       req.logIn(user, (error) => {
         console.log(user);
-        res.status(200).send({ message: "user created" });
+        res.status(200).send({ message: "user created", id: user.id });
       });
     }
   })(req, res, next);
 });
 const { verifyToken } = require("../../middlewares");
-router.put("/update", verifyToken(), (req, res, next) => {
-  passport.authenticate("jwt", (err, user, info) => {
+router.patch("/update", verifyToken(), (req, res, next) => {
+  passport.authenticate("jwt", async (err, user, info) => {
     if (err) {
       console.log(err);
     }
@@ -83,6 +87,23 @@ router.put("/update", verifyToken(), (req, res, next) => {
     } else {
       console.log("use r is");
       console.log(user);
+      const userStored = await User.findOne({
+        where: {
+          id: user.id,
+        },
+      });
+      let name = req.body.name;
+      let dob = req.body.dob;
+      let update = {};
+      if (name) {
+        update = { name };
+      }
+      if (dob) {
+        update.dob = dob;
+      }
+      const updatedUser = await userStored.update(update).catch(errHandler);
+
+      console.log(updatedUser);
       res.status(200).send(user);
     }
   })(req, res, next);
