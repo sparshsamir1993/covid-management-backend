@@ -33,7 +33,7 @@ router.post("/login", (req, res, next) => {
           { id: user.id, email: user.email },
           jwtSecret.secret,
           {
-            expiresIn: 60 * 60,
+            expiresIn: 600 * 60,
           }
         );
         const token = jwt.sign(
@@ -43,13 +43,13 @@ router.post("/login", (req, res, next) => {
             expiresIn: 10,
           }
         );
+        await redisClient.setAsync(user.id, refreshToken);
         res.status(200).send({
           auth: true,
           token,
           message: "user found & logged in",
           refreshToken,
         });
-        await redisClient.setAsync(user.id, refreshToken);
       });
     }
   })(req, res, next);
@@ -75,38 +75,47 @@ router.post("/signup", (req, res, next) => {
     }
   })(req, res, next);
 });
-const { verifyToken } = require("../../middlewares");
-router.patch("/update", verifyToken(), (req, res, next) => {
-  passport.authenticate("jwt", async (err, user, info) => {
-    if (err) {
-      console.log(err);
-    }
-    if (info !== undefined) {
-      console.error(info.message);
-      res.status(403).send(info.message);
-    } else {
-      console.log("use r is");
-      console.log(user);
-      const userStored = await User.findOne({
-        where: {
-          id: user.id,
-        },
-      });
-      let name = req.body.name;
-      let dob = req.body.dob;
-      let update = {};
-      if (name) {
-        update = { name };
-      }
-      if (dob) {
-        update.dob = dob;
-      }
-      const updatedUser = await userStored.update(update).catch(errHandler);
+const { verifyToken, jwtAuth } = require("../../middlewares");
 
-      console.log(updatedUser);
-      res.status(200).send(user);
+router.patch("/update", verifyToken(), async (req, res, next) => {
+  let user = await jwtAuth(req, res, next);
+  if (user) {
+    const userStored = await User.findOne({
+      where: {
+        id: user.id,
+      },
+    });
+    let name = req.body.name;
+    let dob = req.body.dob;
+    let update = {};
+    if (name) {
+      update = { name };
     }
-  })(req, res, next);
+    if (dob) {
+      update.dob = dob;
+    }
+    const updatedUser = await userStored.update(update).catch(errHandler);
+    let { id, email } = updatedUser;
+    // console.log(updatedUser);
+    res.status(200).send({ id, email, name: updatedUser.name });
+  } else {
+    res.status(404).send("Cant find user");
+  }
+});
+
+router.get("/get", verifyToken(), async (req, res, next) => {
+  const user = await jwtAuth(req, res, next);
+  if (user) {
+    const userStored = await User.findOne({
+      where: {
+        id: user.id,
+      },
+    });
+    let { id, name, email } = userStored;
+    res.status(200).send({ id, name, email });
+  } else {
+    res.status(500).send("Error");
+  }
 });
 
 module.exports = router;

@@ -5,10 +5,10 @@ const CONSTANTS = require("../constants");
 module.exports = () => {
   return async (req, res, next) => {
     const auth = req.headers[CONSTANTS.auth.AUTH_TOKEN_HEADER].split(" ");
-    console.log(auth[1]);
+
     if (auth.length > 1) {
       const token = auth[1];
-      console.log("token is --- " + auth);
+
       try {
         jwt.verify(token, config.secret);
         next();
