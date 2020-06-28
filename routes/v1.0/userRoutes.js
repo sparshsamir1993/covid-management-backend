@@ -5,6 +5,7 @@ const User = require("../../models/user");
 const jwtSecret = require("../../config/jwtConfig");
 const { v4: uuid } = require("uuid");
 const redisClient = require("../../services/redis-client");
+const Question = require("../../models/Question");
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("login", async (err, users, info) => {
@@ -81,11 +82,15 @@ router.put("/update", verifyToken(), (req, res, next) => {
       console.error(info.message);
       res.status(403).send(info.message);
     } else {
-      console.log("use r is");
+      console.log("user is");
       console.log(user);
       res.status(200).send(user);
     }
   })(req, res, next);
 });
+
+
+
+
 
 module.exports = router;
