@@ -2,6 +2,10 @@ var router = require("express").Router();
 var Question = require("../../../models/Question");
 var QAnswerOptions = require("../../../models/QAnswerOptions");
 
+const errHandler = (err) => {
+  console.log("\n\n  *****  Error  **** :: " + err);
+};
+
 router.get("/", async (req, res) => {
   const check = await QAnswerOptions.findAll({
     where: {
@@ -13,14 +17,8 @@ router.get("/", async (req, res) => {
         required: true,
       },
     ],
-  })
-    .then((questions) => {
-      res.send(questions);
-      console.log(questions);
-    })
-    .catch((error) => {
-      res.send(error);
-    });
+  }).catch(errHandler);
+  res.status(200).send(check);
 });
 
 router.post("/", async (req, res) => {

@@ -2,32 +2,32 @@ var router = require("express").Router();
 var Question = require("../../../models/Question");
 var QAnswerOptions = require("../../../models/QAnswerOptions");
 
+const errHandler = (err) => {
+  console.log("\n\n  *****  Error  **** :: " + err);
+};
+
 router.get("/", async (req, res) => {
-  const questions = await Question.findAll()
-    .then((questions) => {
-      res.status(200).send(questions);
-    })
-    .catch((error) => {
-      res.send(error);
-    });
+  const questions = await Question.findAll().catch(errHandler);
+  res.status(200).send(questions);
 });
 
 router.post("/", async (req, res) => {
   let text = req.body.question;
   const myquestion = await Question.create({ question: text });
   console.log(text);
-  res.send(text);
+  res.status(200).send(text);
 });
 
 router.get("/:id", async (req, res) => {
   let questionid = req.params.id;
-  const myquestion = await Question.findAll({ where: { id: questionid } })
-    .then((myquestion) => {
-      res.status(200).send(myquestion);
-    })
-    .catch((error) => {
-      res.status(403).send(error);
-    });
+  const myquestion = await Question.findAll({
+    where: { id: questionid },
+  }).catch(errHandler);
+  if (myquestion.length < 1) {
+    res.sendStatus(404);
+  } else {
+    res.status(200).send(myquestion);
+  }
 });
 
 router.put("/:id", async (req, res) => {
@@ -35,13 +35,8 @@ router.put("/:id", async (req, res) => {
   const myquestion = await Question.update(
     { question: req.body.question },
     { where: { id: questionid } }
-  )
-    .then((myquestion) => {
-      res.status(200).send(myquestion);
-    })
-    .catch((error) => {
-      res.sendStatus(403).send(error);
-    });
+  ).catch(errHandler);
+  res.status(200).send(myquestion);
 });
 
 router.delete("/:id", async (req, res) => {
@@ -50,13 +45,13 @@ router.delete("/:id", async (req, res) => {
     where: {
       id: questionid,
     },
-  })
-    .then((requestCode) => {
-      res.sendStatus(200).send(requestCode);
-    })
-    .catch((error) => {
-      res.sendStatus(403).send(error);
-    });
+  }).catch(errHandler);
+  console.log(requestId);
+  if (requestId < 1) {
+    res.sendStatus(404);
+  } else {
+    res.sendStatus(200).send(requestId);
+  }
 });
 
 module.exports = router;
