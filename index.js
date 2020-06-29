@@ -18,7 +18,18 @@ app.use(
     keys: [keys.cookieKey],
   })
 );
-app.use(cors());
+const corsOptions = {
+  origin: ["http://localhost", "http://localhost:3000", "*"],
+  credentials: true,
+  exposedHeaders: [
+    "Access-Control-Allow-Origin",
+    "Vary",
+    "Content-Length",
+    "token",
+    "refresh-token",
+  ],
+};
+app.use(cors(corsOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 

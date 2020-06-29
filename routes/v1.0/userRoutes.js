@@ -33,14 +33,14 @@ router.post("/login", (req, res, next) => {
           { id: user.id, email: user.email },
           jwtSecret.secret,
           {
-            expiresIn: 600 * 60,
+            expiresIn: REFRESH_EXPIRY,
           }
         );
         const token = jwt.sign(
           { id: user.id, email: user.email },
           jwtSecret.secret,
           {
-            expiresIn: 10,
+            expiresIn: JWT_EXPIRY,
           }
         );
         await redisClient.setAsync(user.id, refreshToken);
@@ -76,6 +76,7 @@ router.post("/signup", (req, res, next) => {
   })(req, res, next);
 });
 const { verifyToken, jwtAuth } = require("../../middlewares");
+const { REFRESH_EXPIRY, JWT_EXPIRY } = require("../../constants/authConstants");
 
 router.patch("/update", verifyToken(), async (req, res, next) => {
   let user = await jwtAuth(req, res, next);
@@ -112,6 +113,9 @@ router.get("/get", verifyToken(), async (req, res, next) => {
       },
     });
     let { id, name, email } = userStored;
+    console.log("head issss");
+    console.log(res.getHeader("token"));
+    console.log(res.getHeader("refresh-token"));
     res.status(200).send({ id, name, email });
   } else {
     res.status(500).send("Error");
