@@ -6,24 +6,10 @@ const Options = sequelize.define("QAnswerOptions", {
   questionId: Sequelize.INTEGER,
   createdAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
-  
 });
-/*{
 
-   classMethods:{
-     associate: (models) => {
-       options.belongsTo(models.Question,{foreignKey :'id'});
-     }
-   }
+Options.associate = (models) => {
+  Options.hasOne(models.Question);
+};
 
-});*/
-
-
-
-Options.associate = models => {
-  Options.hasOne(models.Question)
-}; 
-
-
-module.exports = Options
-
+module.exports = Options;

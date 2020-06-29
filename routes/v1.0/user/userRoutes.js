@@ -1,11 +1,11 @@
 var router = require("express").Router();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const User = require("../../models/user");
-const jwtSecret = require("../../config/jwtConfig");
+const User = require("../../../models/user");
+const jwtSecret = require("../../../config/jwtConfig");
 const { v4: uuid } = require("uuid");
-const redisClient = require("../../services/redis-client");
-const Question = require("../../models/Question");
+const redisClient = require("../../../services/redis-client");
+const Question = require("../../../models/Question");
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("login", async (err, users, info) => {
@@ -72,7 +72,7 @@ router.post("/signup", (req, res, next) => {
     }
   })(req, res, next);
 });
-const { verifyToken } = require("../../middlewares");
+const { verifyToken } = require("../../../middlewares");
 router.put("/update", verifyToken(), (req, res, next) => {
   passport.authenticate("jwt", (err, user, info) => {
     if (err) {
@@ -88,9 +88,5 @@ router.put("/update", verifyToken(), (req, res, next) => {
     }
   })(req, res, next);
 });
-
-
-
-
 
 module.exports = router;
