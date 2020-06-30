@@ -6,6 +6,7 @@ const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const BCRYPT_SALT_ROUNDS = 12;
 const jwt = require("jsonwebtoken");
+const { USER_ROLE } = require("../constants/authConstants");
 const JWTStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
 const LocalStrategy = require("passport-local").Strategy;
@@ -37,9 +38,6 @@ passport.use(
       session: false,
     },
     async (req, email, password, done) => {
-      console.log(email);
-      console.log(password);
-
       try {
         const user = await User.findOne({
           where: {
@@ -61,7 +59,7 @@ passport.use(
           User.create({
             email,
             password: hashedPassword,
-            email: req.body.email,
+            role: USER_ROLE,
           }).then((user) => {
             console.log("user created");
             return done(null, user);

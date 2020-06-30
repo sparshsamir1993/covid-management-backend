@@ -112,11 +112,11 @@ router.get("/get", verifyToken(), async (req, res, next) => {
         id: user.id,
       },
     });
-    let { id, name, email } = userStored;
+    let { id, name, email, role } = userStored;
     console.log("head issss");
     console.log(res.getHeader("token"));
     console.log(res.getHeader("refresh-token"));
-    res.status(200).send({ id, name, email });
+    res.status(200).send({ id, name, email, role });
   } else {
     res.status(500).send("Error");
   }
