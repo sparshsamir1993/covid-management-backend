@@ -8,8 +8,4 @@ const Options = sequelize.define("QAnswerOptions", {
   updatedAt: Sequelize.DATE,
 });
 
-Options.associate = (models) => {
-  Options.hasOne(models.Question);
-};
-
 module.exports = Options;

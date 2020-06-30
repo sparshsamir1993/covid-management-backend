@@ -77,8 +77,11 @@ router.post("/signup", (req, res, next) => {
   })(req, res, next);
 });
 
-const { verifyToken, jwtAuth } = require("../../middlewares");
-const { REFRESH_EXPIRY, JWT_EXPIRY } = require("../../constants/authConstants");
+const { verifyToken, jwtAuth } = require("../../../middlewares");
+const {
+  REFRESH_EXPIRY,
+  JWT_EXPIRY,
+} = require("../../../constants/authConstants");
 
 router.patch("/update", verifyToken(), async (req, res, next) => {
   let user = await jwtAuth(req, res, next);
