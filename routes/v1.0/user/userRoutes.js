@@ -1,10 +1,11 @@
 var router = require("express").Router();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const User = require("../../models/user");
-const jwtSecret = require("../../config/jwtConfig");
+const User = require("../../../models/user");
+const jwtSecret = require("../../../config/jwtConfig");
 const { v4: uuid } = require("uuid");
-const redisClient = require("../../services/redis-client");
+const redisClient = require("../../../services/redis-client");
+const Question = require("../../../models/Question");
 
 const errHandler = (err) => {
   console.log("Error :: " + err);
@@ -75,8 +76,12 @@ router.post("/signup", (req, res, next) => {
     }
   })(req, res, next);
 });
-const { verifyToken, jwtAuth } = require("../../middlewares");
-const { REFRESH_EXPIRY, JWT_EXPIRY } = require("../../constants/authConstants");
+
+const { verifyToken, jwtAuth } = require("../../../middlewares");
+const {
+  REFRESH_EXPIRY,
+  JWT_EXPIRY,
+} = require("../../../constants/authConstants");
 
 router.patch("/update", verifyToken(), async (req, res, next) => {
   let user = await jwtAuth(req, res, next);
