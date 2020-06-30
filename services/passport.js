@@ -109,8 +109,6 @@ passport.use(
 passport.use(
   "jwt",
   new JWTStrategy(opts, (jwt_payload, done) => {
-    console.log("here is the token");
-    console.log(jwt_payload);
     done(null, jwt_payload);
   })
 );
