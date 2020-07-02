@@ -12,20 +12,27 @@ require("./services/redis-client");
 const app = express();
 app.use(bodyParser.json());
 
-app.use(
-  cookieSession({
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    keys: [keys.cookieKey],
-  })
-);
+// app.use(
+//   cookieSession({
+//     maxAge: 30 * 24 * 60 * 60 * 1000,
+//     keys: [keys.cookieKey],
+//   })
+// );
 const corsOptions = {
-  origin: ["http://localhost", "http://localhost:3000", "*"],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  origin: [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:5050",
+    "*",
+  ],
   credentials: true,
   exposedHeaders: [
     "Access-Control-Allow-Origin",
-    "Vary",
     "Content-Length",
     "token",
+    "authorization",
+    "Authorization",
     "refresh-token",
   ],
 };
