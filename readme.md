@@ -16,6 +16,8 @@ docker-compose up
 
 docker exec -it covidManagementDB bash
 
+mysql -u root -p
+
 ############### Coding instructions ####################
 
 # 1. never work on master branch

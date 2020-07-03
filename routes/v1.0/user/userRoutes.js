@@ -1,10 +1,15 @@
 var router = require("express").Router();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const User = require("../../models/user");
-const jwtSecret = require("../../config/jwtConfig");
+const User = require("../../../models/user");
+const jwtSecret = require("../../../config/jwtConfig");
 const { v4: uuid } = require("uuid");
-const redisClient = require("../../services/redis-client");
+const redisClient = require("../../../services/redis-client");
+const Question = require("../../../models/Question");
+
+const errHandler = (err) => {
+  console.log("Error :: " + err);
+};
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("login", async (err, users, info) => {
@@ -29,23 +34,23 @@ router.post("/login", (req, res, next) => {
           { id: user.id, email: user.email },
           jwtSecret.secret,
           {
-            expiresIn: 60 * 60,
+            expiresIn: REFRESH_EXPIRY,
           }
         );
         const token = jwt.sign(
           { id: user.id, email: user.email },
           jwtSecret.secret,
           {
-            expiresIn: 120,
+            expiresIn: JWT_EXPIRY,
           }
         );
+        await redisClient.setAsync(user.id, refreshToken);
         res.status(200).send({
           auth: true,
           token,
           message: "user found & logged in",
           refreshToken,
         });
-        await redisClient.setAsync(user.id, refreshToken);
       });
     }
   })(req, res, next);
@@ -66,26 +71,58 @@ router.post("/signup", (req, res, next) => {
       // console.log(user);
       req.logIn(user, (error) => {
         console.log(user);
-        res.status(200).send({ message: "user created" });
+        res.status(200).send({ message: "user created", id: user.id });
       });
     }
   })(req, res, next);
 });
-const { verifyToken } = require("../../middlewares");
-router.put("/update", verifyToken(), (req, res, next) => {
-  passport.authenticate("jwt", (err, user, info) => {
-    if (err) {
-      console.log(err);
+
+const { verifyToken, jwtAuth } = require("../../../middlewares");
+const {
+  REFRESH_EXPIRY,
+  JWT_EXPIRY,
+} = require("../../../constants/authConstants");
+
+router.patch("/update", verifyToken(), async (req, res, next) => {
+  let user = await jwtAuth(req, res, next);
+  if (user) {
+    const userStored = await User.findOne({
+      where: {
+        id: user.id,
+      },
+    });
+    let name = req.body.name;
+    let dob = req.body.dob;
+    let update = {};
+    if (name) {
+      update = { name };
     }
-    if (info !== undefined) {
-      console.error(info.message);
-      res.status(403).send(info.message);
-    } else {
-      console.log("use r is");
-      console.log(user);
-      res.status(200).send(user);
+    if (dob) {
+      update.dob = dob;
     }
-  })(req, res, next);
+    const updatedUser = await userStored.update(update).catch(errHandler);
+    let { id, email } = updatedUser;
+    // console.log(updatedUser);
+    res.status(200).send({ id, email, name: updatedUser.name });
+  } else {
+    res.status(404).send("Cant find user");
+  }
+});
+
+router.get("/get", verifyToken(), async (req, res, next) => {
+  const user = await jwtAuth(req, res, next);
+  if (user) {
+    const userStored = await User.findOne({
+      where: {
+        id: user.id,
+      },
+    });
+
+    let { id, name, email, role } = userStored;
+    res.status(200).send({ id, name, email, role });
+  } else {
+    res.status(500).send("Error");
+  }
 });
 
 module.exports = router;
