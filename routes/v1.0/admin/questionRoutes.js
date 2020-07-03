@@ -1,21 +1,22 @@
 var router = require("express").Router();
 var Question = require("../../../models/Question");
 var QAnswerOptions = require("../../../models/QAnswerOptions");
+const verifyToken = require("../../../middlewares/verifyToken");
 
 const errHandler = (err) => {
   console.log("\n\n  *****  Error  **** :: " + err);
 };
 
-router.get("/", async (req, res) => {
+router.get("/", verifyToken(), async (req, res) => {
   const questions = await Question.findAll().catch(errHandler);
   res.status(200).send(questions);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", verifyToken(), async (req, res) => {
   let text = req.body.question;
   const myquestion = await Question.create({ question: text });
-  console.log(text);
-  res.status(200).send(text);
+  console.log(myquestion);
+  res.status(200).send(myquestion);
 });
 
 router.get("/:id", async (req, res) => {
@@ -30,8 +31,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
-  let questionid = req.params.id;
+router.patch("/", verifyToken(), async (req, res) => {
+  let questionid = req.body.id;
   const myquestion = await Question.update(
     { question: req.body.question },
     { where: { id: questionid } }
