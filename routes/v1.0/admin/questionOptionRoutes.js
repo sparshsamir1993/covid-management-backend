@@ -16,7 +16,9 @@ const errHandler = (err) => {
 
 router.get("/", async (req, res) => {
   const check = await QAnswerOptions.findAll({
-
+    where: {
+      questionId: req.body.questionId
+    },
     include: [
       {
         model: Question,
@@ -29,28 +31,24 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  let option1 = req.body.option1;
-  let option2 = req.body.option2;
+  let options = req.body.options;
   let questionId = req.body.questionId;
   const myquestion = await QAnswerOptions.create({
-    option1: option1,
-    option2: option2,
+    options: options,
     questionId: questionId,
   }).catch(errHandler);
-  res.status.send(myquestion);
+  res.status(200).send(myquestion);
   console.log(myquestion);
 });
 
 router.put("/:questionId", async (req, res) => {
 
-  let option1 = req.body.option1;
-  let option2 = req.body.option2;
+  let options = req.body.options;
   let questionId = req.params.questionId;
   const myOption = await QAnswerOptions.update(
-    { option1: option1 },
+    { options: options },
     { where: { id: questionId } }
-  ).then(QAnswerOptions.update({ option2: option2 }, { where: { id: questionId } }))
-    .catch(errHandler);
+  ).catch(errHandler);
   // console.log(myOption);
   res.status(200).send(myOption)
 
