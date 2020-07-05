@@ -15,11 +15,10 @@ router.get("/", verifyToken(), async (req, res) => {
 router.post("/", verifyToken(), async (req, res) => {
   let text = req.body.question;
   const myquestion = await Question.create({ question: text });
-  console.log(myquestion);
   res.status(200).send(myquestion);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", verifyToken(), async (req, res) => {
   let questionid = req.params.id;
   const myquestion = await Question.findAll({
     where: { id: questionid },
@@ -40,7 +39,7 @@ router.patch("/", verifyToken(), async (req, res) => {
   res.status(200).send(myquestion);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken(), async (req, res) => {
   let questionid = req.params.id;
   const requestId = await Question.destroy({
     where: {
