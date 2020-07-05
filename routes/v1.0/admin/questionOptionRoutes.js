@@ -2,13 +2,14 @@ const router = require("express").Router();
 const Question = require("../../../models/Question");
 const QAnswerOptions = require("../../../models/QAnswerOptions");
 Question.hasMany(QAnswerOptions, {
-  as: "qAnswerOptions",
-  foreignKey: "questionId",
+  as: "qAnswerOptions"
+
 });
 QAnswerOptions.belongsTo(Question, {
-  as: "question",
-  foreignKey: "questionId",
+  as: "question"
+
 });
+
 const errHandler = (err) => {
   console.log("\n\n  *****  Error  **** :: " + err);
 };
@@ -16,7 +17,7 @@ const errHandler = (err) => {
 router.get("/", async (req, res) => {
   const check = await QAnswerOptions.findAll({
     where: {
-      questionId: req.body.questionId,
+      questionId: req.body.questionId
     },
     include: [
       {
@@ -30,16 +31,38 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  let option1 = req.body.option1;
-  let option2 = req.body.option2;
+  let options = req.body.options;
   let questionId = req.body.questionId;
   const myquestion = await QAnswerOptions.create({
-    option1: option1,
-    option2: option2,
+    options: options,
     questionId: questionId,
-  });
-  res.status.send(myquestion);
+  }).catch(errHandler);
+  res.status(200).send(myquestion);
   console.log(myquestion);
+});
+
+router.put("/:questionId", async (req, res) => {
+
+  let options = req.body.options;
+  let questionId = req.params.questionId;
+  const myOption = await QAnswerOptions.update(
+    { options: options },
+    { where: { id: questionId } }
+  ).catch(errHandler);
+  // console.log(myOption);
+  res.status(200).send(myOption)
+
+});
+
+router.delete("/:questionId", async (req, res) => {
+  let questionid = req.params.id;
+  const requestId = await QAnswerOptions.destroy({ where: { id: questionid } }).catch(errHandler);
+  if (requestId < 1) {
+    res.sendStatus(403);
+  } else {
+    res.sendStatus(200).send(requestId);
+  }
+
 });
 
 module.exports = router;
