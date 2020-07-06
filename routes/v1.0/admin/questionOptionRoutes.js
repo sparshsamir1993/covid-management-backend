@@ -1,10 +1,7 @@
 const router = require("express").Router();
 const Question = require("../../../models/Question");
 const QAnswerOptions = require("../../../models/QAnswerOptions");
-Question.hasMany(QAnswerOptions, {
-  as: "qAnswerOptions"
 
-});
 QAnswerOptions.belongsTo(Question, {
   as: "question"
 
@@ -16,9 +13,9 @@ const errHandler = (err) => {
 
 router.get("/", async (req, res) => {
   const check = await QAnswerOptions.findAll({
-    where: {
-      questionId: req.body.questionId
-    },
+    //where: {
+    //questionId: req.body.questionId
+    //},
     include: [
       {
         model: Question,
@@ -49,14 +46,15 @@ router.put("/:questionId", async (req, res) => {
     { options: options },
     { where: { id: questionId } }
   ).catch(errHandler);
-  // console.log(myOption);
+  // console.log(myOption);DELETE
   res.status(200).send(myOption)
 
 });
 
 router.delete("/:questionId", async (req, res) => {
-  let questionid = req.params.id;
-  const requestId = await QAnswerOptions.destroy({ where: { id: questionid } }).catch(errHandler);
+  let questionid = req.params.questionId;
+  const requestId = await QAnswerOptions.destroy({ where: { id: questionid, }, }).catch(errHandler);
+  console.log(requestId);
   if (requestId < 1) {
     res.sendStatus(403);
   } else {

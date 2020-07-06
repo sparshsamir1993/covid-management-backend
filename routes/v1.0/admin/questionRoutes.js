@@ -6,9 +6,33 @@ const errHandler = (err) => {
   console.log("\n\n  *****  Error  **** :: " + err);
 };
 
+Question.hasMany(QAnswerOptions, {
+  as: "qAnswerOptions"
+
+});
+
 router.get("/", async (req, res) => {
   const questions = await Question.findAll().catch(errHandler);
   res.status(200).send(questions);
+});
+
+
+router.get("/options", async (req, res) => {
+  let myquestion = req.params.id;
+  const myoptions = await Question.findAll(
+    {
+      //  where: { id: myquestion },
+      include: [
+        {
+          model: QAnswerOptions,
+          as: "qAnswerOptions",
+          required: true,
+        },
+
+      ],
+    });
+  console.log(myoptions);
+  res.status(200).send(myoptions).catch(errHandler);
 });
 
 router.post("/", async (req, res) => {
