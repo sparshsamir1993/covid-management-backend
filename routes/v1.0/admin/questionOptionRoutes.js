@@ -4,6 +4,7 @@ const QAnswerOptions = require("../../../models/QAnswerOptions");
 Question.hasMany(QAnswerOptions, {
   as: "qAnswerOptions",
 });
+
 QAnswerOptions.belongsTo(Question, {
   as: "question",
 });
@@ -46,14 +47,16 @@ router.patch("/:questionId", async (req, res) => {
     { optionContent },
     { where: { id: questionId } }
   ).catch(errHandler);
+  // console.log(myOption);DELETE
   res.status(200).send(myOption);
 });
 
 router.delete("/:questionId", async (req, res) => {
-  let questionid = req.params.id;
+  let questionid = req.params.questionId;
   const requestId = await QAnswerOptions.destroy({
     where: { id: questionid },
   }).catch(errHandler);
+  console.log(requestId);
   if (requestId < 1) {
     res.sendStatus(403);
   } else {
