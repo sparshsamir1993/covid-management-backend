@@ -11,12 +11,12 @@ Question.hasMany(QAnswerOptions, {
   as: "qAnswerOptions",
 });
 
-router.get("/", async (req, res) => {
+router.get("/", verifyToken(), async (req, res) => {
   const questions = await Question.findAll().catch(errHandler);
   res.status(200).send(questions);
 });
 
-router.get("/options", async (req, res) => {
+router.get("/options", verifyToken(), async (req, res) => {
   let myquestion = req.params.id;
   const myoptions = await Question.findAll({
     //  where: { id: myquestion },
@@ -24,15 +24,15 @@ router.get("/options", async (req, res) => {
       {
         model: QAnswerOptions,
         as: "qAnswerOptions",
-        required: true,
+        // required: true,
       },
     ],
   });
   console.log(myoptions);
-  res.status(200).send(myoptions).catch(errHandler);
+  res.status(200).send(myoptions);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", verifyToken(), async (req, res) => {
   let text = req.body.question;
   const myquestion = await Question.create({ question: text });
   res.status(200).send(myquestion);

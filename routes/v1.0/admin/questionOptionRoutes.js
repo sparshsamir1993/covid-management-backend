@@ -1,9 +1,7 @@
 const router = require("express").Router();
 const Question = require("../../../models/Question");
 const QAnswerOptions = require("../../../models/QAnswerOptions");
-Question.hasMany(QAnswerOptions, {
-  as: "qAnswerOptions",
-});
+const verifyToken = require("../../../middlewares/verifyToken");
 
 QAnswerOptions.belongsTo(Question, {
   as: "question",
@@ -13,10 +11,10 @@ const errHandler = (err) => {
   console.log("\n\n  *****  Error  **** :: " + err);
 };
 
-router.get("/", async (req, res) => {
+router.get("/:questionId", verifyToken(), async (req, res) => {
   const check = await QAnswerOptions.findAll({
     where: {
-      questionId: req.body.questionId,
+      questionId: req.params.questionId,
     },
     include: [
       {
@@ -29,32 +27,31 @@ router.get("/", async (req, res) => {
   res.status(200).send(check);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", verifyToken(), async (req, res) => {
   let optionContent = req.body.optionContent;
   let questionId = req.body.questionId;
   const myquestion = await QAnswerOptions.create({
     optionContent,
-    questionId: questionId,
+    questionId,
   }).catch(errHandler);
   res.status(200).send(myquestion);
   console.log(myquestion);
 });
 
-router.patch("/:questionId", async (req, res) => {
+router.patch("/:optionId", verifyToken(), async (req, res) => {
   let optionContent = req.body.optionContent;
-  let questionId = req.params.questionId;
+  let optionId = req.params.optionId;
   const myOption = await QAnswerOptions.update(
     { optionContent },
-    { where: { id: questionId } }
+    { where: { id: optionId } }
   ).catch(errHandler);
-  // console.log(myOption);DELETE
   res.status(200).send(myOption);
 });
 
-router.delete("/:questionId", async (req, res) => {
-  let questionid = req.params.questionId;
+router.delete("/:optionId", verifyToken(), async (req, res) => {
+  let optionId = req.params.optionId;
   const requestId = await QAnswerOptions.destroy({
-    where: { id: questionid },
+    where: { id: optionId },
   }).catch(errHandler);
   console.log(requestId);
   if (requestId < 1) {
