@@ -27,15 +27,16 @@ router.get("/options", async (req, res) => {
         required: true,
       },
     ],
-  });
+  }).catch(errHandler);
   console.log(myoptions);
-  res.status(200).send(myoptions).catch(errHandler);
+  res.status(200).send(myoptions);
 });
 
 router.post("/", async (req, res) => {
   let text = req.body.question;
   const myquestion = await Question.create({ question: text });
   res.status(200).send(myquestion);
+  console.log(myquestion)
 });
 
 router.get("/:id", verifyToken(), async (req, res) => {
@@ -58,6 +59,19 @@ router.patch("/", verifyToken(), async (req, res) => {
   ).catch(errHandler);
   res.status(200).send(myquestion);
 });
+
+router.patch("/addCorrectOption", async (req, res) => {
+  let correctOption = req.body.correctOptionId;
+  let questionId = req.body.questionId;
+  const myAddedData = await Question.update(
+    { correctOptionId: correctOption },
+    { where: { id: questionId } }
+
+  ).catch(errHandler);
+  res.status(200).send(myAddedData);
+
+});
+
 
 router.delete("/:id", verifyToken(), async (req, res) => {
   let questionid = req.params.id;

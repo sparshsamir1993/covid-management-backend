@@ -1,9 +1,6 @@
 const router = require("express").Router();
 const Question = require("../../../models/Question");
 const QAnswerOptions = require("../../../models/QAnswerOptions");
-Question.hasMany(QAnswerOptions, {
-  as: "qAnswerOptions",
-});
 
 QAnswerOptions.belongsTo(Question, {
   as: "question",
@@ -45,16 +42,29 @@ router.patch("/:questionId", async (req, res) => {
   let questionId = req.params.questionId;
   const myOption = await QAnswerOptions.update(
     { optionContent },
-    { where: { id: questionId } }
+    { where: { questionId: questionId } }
   ).catch(errHandler);
-  // console.log(myOption);DELETE
+  console.log(myOption);
   res.status(200).send(myOption);
 });
 
-router.delete("/:questionId", async (req, res) => {
-  let questionid = req.params.questionId;
+// Route to add the correct Option in the QAnswerOptions Table
+
+router.patch("/addAnswer/:questionId", async (req, res) => {
+  let questionId = req.params.questionId;
+  let correctAnswer = req.body.correctAnswer;
+  const myOption = await QAnswerOptions.update(
+    { correctAnswer },
+    { where: { questionId: questionId } }
+  ).catch(errHandler);
+  res.status(200).send(myOption);
+
+});
+
+router.delete("/:optionId", async (req, res) => {
+  let optionId = req.params.optionId;
   const requestId = await QAnswerOptions.destroy({
-    where: { id: questionid },
+    where: { id: optionId },
   }).catch(errHandler);
   console.log(requestId);
   if (requestId < 1) {

@@ -50,6 +50,8 @@ router.post("/login", (req, res, next) => {
           token,
           message: "user found & logged in",
           refreshToken,
+          id: user.id,
+
         });
       });
     }
