@@ -5,7 +5,9 @@ var router = require("express").Router();
 
 router.get("/", verifyToken(), async (req, res) => {
   try {
-    const userList = await User.findAll({ attributes: ["name", "email"] });
+    const userList = await User.findAll({
+      attributes: ["name", "email", "id"],
+    });
     console.log(userList);
     res.status(200).send(userList);
   } catch (err) {
