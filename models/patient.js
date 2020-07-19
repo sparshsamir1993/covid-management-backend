@@ -4,5 +4,5 @@ module.exports = sequelize.define("Patients", {
   userId: Sequelize.INTEGER,
   hospitalId: Sequelize.INTEGER,
   createdAt: Sequelize.DATE,
-  updatedAt: Sequelize.INTEGER,
+  updatedAt: Sequelize.DATE,
 });
