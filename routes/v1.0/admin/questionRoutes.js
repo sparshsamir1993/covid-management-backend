@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
   res.status(200).send(questions);
 });
 
-router.get("/options", async (req, res) => {
+router.get("/options", verifyToken(), async (req, res) => {
   let myquestion = req.params.id;
   const myoptions = await Question.findAll({
     //  where: { id: myquestion },
