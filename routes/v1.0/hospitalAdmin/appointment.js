@@ -2,7 +2,7 @@ const User = require("../../../models/user");
 const Appointment = require("../../../models/appointment");
 // const Patient = require("../../../models/patient");
 // const User = require("../../../models/user");
-const Hospital = require("../../../models/patient");
+const Hospital = require("../../../models/hospital");
 const verifyToken = require("../../../middlewares/verifyToken");
 const {
   APPOINTMENT_BOOKED,
@@ -26,13 +26,30 @@ Hospital.hasMany(Appointment, {
 
 var router = require("express").Router();
 
+router.get("/list/:hospitalId", verifyToken(), async (req, res, next) => {
+  try {
+    console.log("in listtt");
+    const hospitalId = req.params.hospitalId;
+    console.log(hospitalId);
+    const appointmentList = await Appointment.findAll({
+      where: { hospitalId },
+      group: ["appointmentDate"],
+    });
+
+    res.status(200).send(appointmentList);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 router.post("/book", verifyToken(), async (req, res, next) => {
   try {
     const {
       isNewUser,
       userId,
       hospitalId,
-      appointmentDateTime,
+      appointmentDate,
+      appointmentTime,
       email,
       name,
     } = req.body;
@@ -40,7 +57,8 @@ router.post("/book", verifyToken(), async (req, res, next) => {
       isNewUser,
       userId,
       hospitalId,
-      appointmentDateTime,
+      appointmentDate,
+      appointmentTime,
       email,
       name,
     };
@@ -50,7 +68,8 @@ router.post("/book", verifyToken(), async (req, res, next) => {
           userId,
           hospitalId,
           appointmentStatus: APPOINTMENT_BOOKED,
-          appointmentDateTime,
+          appointmentDate,
+          appointmentTime,
         },
         req,
         res
@@ -66,9 +85,27 @@ router.post("/book", verifyToken(), async (req, res, next) => {
 });
 
 const createAppointment = async (data, req, res) => {
-  let { userId, appointmentStatus, appointmentDateTime, hospitalId } = data;
-  console.log({ userId, hospitalId, appointmentStatus, appointmentDateTime });
-  if (!userId || !hospitalId || !appointmentDateTime || !appointmentStatus) {
+  let {
+    userId,
+    appointmentStatus,
+    appointmentDate,
+    appointmentTime,
+    hospitalId,
+  } = data;
+  console.log({
+    userId,
+    hospitalId,
+    appointmentStatus,
+    appointmentDate,
+    appointmentTime,
+  });
+  if (
+    !userId ||
+    !hospitalId ||
+    !appointmentDate ||
+    !appointmentStatus ||
+    !appointmentTime
+  ) {
     res.status(500).send("Check Appointment Data");
   }
   try {
@@ -76,7 +113,8 @@ const createAppointment = async (data, req, res) => {
       userId,
       hospitalId,
       appointmentStatus,
-      appointmentDateTime,
+      appointmentDate,
+      appointmentTime,
     });
     return newAppointment;
   } catch (err) {

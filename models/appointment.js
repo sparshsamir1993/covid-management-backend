@@ -1,9 +1,11 @@
 "use strict";
 const Sequelize = require("sequelize");
 module.exports = sequelize.define("Appointments", {
-  appointmentDateTime: Sequelize.DATE,
+  appointmentDate: Sequelize.DATE,
+  appointmentTime: Sequelize.TIME,
   appointmentStatus: Sequelize.STRING,
-  patientId: Sequelize.INTEGER,
+  userId: Sequelize.INTEGER,
+  hospitalId: Sequelize.INTEGER,
   createdAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
 });
