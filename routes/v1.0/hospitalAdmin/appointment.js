@@ -33,7 +33,12 @@ router.get("/list/:hospitalId", verifyToken(), async (req, res, next) => {
     console.log(hospitalId);
     const appointmentList = await Appointment.findAll({
       where: { hospitalId },
-      group: ["appointmentDate"],
+      include: [
+        {
+          model: User,
+          as: "user",
+        },
+      ],
     });
 
     res.status(200).send(appointmentList);
