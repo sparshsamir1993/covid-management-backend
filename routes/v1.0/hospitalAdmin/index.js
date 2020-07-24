@@ -1,5 +1,6 @@
 var router = require("express").Router();
+
 router.use("/user", require("./user"));
-router.use("/admin", require("./admin"));
-router.use("/hospital", require("./hospitalAdmin"));
+router.use("/appointment", require("./appointment"));
+
 module.exports = router;

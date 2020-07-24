@@ -11,10 +11,10 @@ const errHandler = (err) => {
   console.log("\n\n  *****  Error  **** :: " + err);
 };
 
-router.get("/", verifyToken(), async (req, res) => {
+router.get("/:questionId", verifyToken(), async (req, res) => {
   const check = await QAnswerOptions.findAll({
     where: {
-      questionId: req.body.questionId,
+      questionId: req.params.questionId,
     },
     include: [
       {
@@ -32,34 +32,21 @@ router.post("/", verifyToken(), async (req, res) => {
   let questionId = req.body.questionId;
   const myquestion = await QAnswerOptions.create({
     optionContent,
-    questionId: questionId,
+    questionId,
   }).catch(errHandler);
   res.status(200).send(myquestion);
   console.log(myquestion);
 });
 
-router.patch("/:questionId", verifyToken(), async (req, res) => {
+router.patch("/:optionId", verifyToken(), async (req, res) => {
   let optionContent = req.body.optionContent;
-  let questionId = req.params.questionId;
+  let optionId = req.params.optionId;
   const myOption = await QAnswerOptions.update(
     { optionContent },
-    { where: { questionId: questionId } }
-  ).catch(errHandler);
-  console.log(myOption);
-  res.status(200).send(myOption);
-});
 
-// Route to add the correct Option in the QAnswerOptions Table
-
-router.patch("/addAnswer/:questionId", verifyToken(), async (req, res) => {
-  let questionId = req.params.questionId;
-  let correctAnswer = req.body.correctAnswer;
-  const myOption = await QAnswerOptions.update(
-    { correctAnswer },
-    { where: { questionId: questionId } }
+    { where: { id: optionId } }
   ).catch(errHandler);
   res.status(200).send(myOption);
-
 });
 
 router.delete("/:optionId", verifyToken(), async (req, res) => {
@@ -74,5 +61,15 @@ router.delete("/:optionId", verifyToken(), async (req, res) => {
     res.sendStatus(200).send(requestId);
   }
 });
+// Route to add the correct Option in the QAnswerOptions Table
 
+router.patch("/addAnswer/:questionId", verifyToken(), async (req, res) => {
+  let questionId = req.params.questionId;
+  let correctAnswer = req.body.correctAnswer;
+  const myOption = await QAnswerOptions.update(
+    { correctAnswer },
+    { where: { questionId: questionId } }
+  ).catch(errHandler);
+  res.status(200).send(myOption);
+});
 module.exports = router;

@@ -6,7 +6,18 @@ const jwtSecret = require("../../../config/jwtConfig");
 const { v4: uuid } = require("uuid");
 const redisClient = require("../../../services/redis-client");
 const Question = require("../../../models/Question");
+const HospitalAdmin = require("../../../models/hospitalAdmin");
+const Hospital = require("../../../models/hospital");
 
+HospitalAdmin.belongsTo(Hospital, {
+  as: "hospital",
+  foreignKey: "hospitalId",
+});
+
+Hospital.hasMany(HospitalAdmin, {
+  as: "hospitalAdmin",
+  foreignKey: "hospitalId",
+});
 const errHandler = (err) => {
   console.log("Error :: " + err);
 };
@@ -118,10 +129,22 @@ router.get("/get", verifyToken(), async (req, res, next) => {
       where: {
         id: user.id,
       },
+      include: [
+        {
+          model: HospitalAdmin,
+          as: "hospitalAdmin",
+          include: [
+            {
+              model: Hospital,
+              as: "hospital",
+            },
+          ],
+        },
+      ],
     });
 
-    let { id, name, email, role } = userStored;
-    res.status(200).send({ id, name, email, role });
+    let { id, name, email, role, hospitalAdmin } = userStored;
+    res.status(200).send({ id, name, email, role, hospitalAdmin });
   } else {
     res.status(500).send("Error");
   }

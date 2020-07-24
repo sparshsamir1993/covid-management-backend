@@ -11,7 +11,7 @@ Question.hasMany(QAnswerOptions, {
   as: "qAnswerOptions",
 });
 
-router.get("/", async (req, res) => {
+router.get("/", verifyToken(), async (req, res) => {
   const questions = await Question.findAll().catch(errHandler);
   res.status(200).send(questions);
 });
@@ -24,7 +24,7 @@ router.get("/options", verifyToken(), async (req, res) => {
       {
         model: QAnswerOptions,
         as: "qAnswerOptions",
-        required: true,
+        // required: true,
       },
     ],
   }).catch(errHandler);
@@ -36,7 +36,7 @@ router.post("/", verifyToken(), async (req, res) => {
   let text = req.body.question;
   const myquestion = await Question.create({ question: text });
   res.status(200).send(myquestion);
-  console.log(myquestion)
+  console.log(myquestion);
 });
 
 router.get("/:id", verifyToken(), async (req, res) => {
@@ -60,18 +60,15 @@ router.patch("/", verifyToken(), async (req, res) => {
   res.status(200).send(myquestion);
 });
 
-router.patch("/addCorrectOption", async (req, res) => {
+router.patch("/addCorrectOption", verifyToken(), async (req, res) => {
   let correctOption = req.body.correctOptionId;
   let questionId = req.body.questionId;
   const myAddedData = await Question.update(
     { correctOptionId: correctOption },
     { where: { id: questionId } }
-
   ).catch(errHandler);
   res.status(200).send(myAddedData);
-
 });
-
 
 router.delete("/:id", verifyToken(), async (req, res) => {
   let questionid = req.params.id;
