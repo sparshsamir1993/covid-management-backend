@@ -5,38 +5,13 @@ const { object } = require("../../../services/redis-client");
 const Question = require("../../../models/Question");
 const verifyToken = require("../../../middlewares/verifyToken");
 
-UserQuestionAnswer.belongsTo(QAnswerOptions, {
-    as: "option"
-});
-
 const errHandler = (err) => {
     console.log("\n\n  *****  Error  **** :: " + err);
 };
 
 
-router.get("/", verifyToken(), async (req, res) => {
-
-    const userAnswers = await UserQuestionAnswer.findAll({
-
-        include: [{
-            model: QAnswerOptions,
-            as: "option",
-            required: true,
-            include: [{
-                model: Question,
-                as: "question",
-                required: true
-            }],
-
-        },],
-    }).catch(errHandler);
-    res.status(200).send(userAnswers);
-    console.log(userAnswers);
-
-});
-
 //Fetching user submitted data using userId
-router.post("/", verifyToken(), async (req, res) => {
+router.post("/getResponse", verifyToken(), async (req, res) => {
 
     const userAnswers = await UserQuestionAnswer.findAll({
         where: { userId: req.body.userId },
@@ -71,9 +46,9 @@ router.post("/addResponse", verifyToken(), async (req, res) => {
         }
     }
     checkForCovid(res);
-})
+});
 
-router.patch("/", verifyToken(), async (req, res, next) => {
+router.patch("/updateResponse", verifyToken(), async (req, res, next) => {
     const userAnswers = req.body.userAnswers;
     const userId = req.body.userId;
     const myQuestions = await Question.findAll().catch(errHandler);

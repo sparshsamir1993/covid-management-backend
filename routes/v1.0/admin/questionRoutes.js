@@ -32,7 +32,7 @@ router.get("/options", verifyToken(), async (req, res) => {
   res.status(200).send(myoptions);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", verifyToken(), async (req, res) => {
   let text = req.body.question;
   const myquestion = await Question.create({ question: text });
   res.status(200).send(myquestion);

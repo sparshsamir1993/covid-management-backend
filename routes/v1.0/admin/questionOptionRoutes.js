@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Question = require("../../../models/Question");
 const QAnswerOptions = require("../../../models/QAnswerOptions");
+const verifyToken = require("../../../middlewares/verifyToken");
 
 QAnswerOptions.belongsTo(Question, {
   as: "question",
@@ -10,7 +11,7 @@ const errHandler = (err) => {
   console.log("\n\n  *****  Error  **** :: " + err);
 };
 
-router.get("/", async (req, res) => {
+router.get("/", verifyToken(), async (req, res) => {
   const check = await QAnswerOptions.findAll({
     where: {
       questionId: req.body.questionId,
@@ -26,7 +27,7 @@ router.get("/", async (req, res) => {
   res.status(200).send(check);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", verifyToken(), async (req, res) => {
   let optionContent = req.body.optionContent;
   let questionId = req.body.questionId;
   const myquestion = await QAnswerOptions.create({
@@ -37,7 +38,7 @@ router.post("/", async (req, res) => {
   console.log(myquestion);
 });
 
-router.patch("/:questionId", async (req, res) => {
+router.patch("/:questionId", verifyToken(), async (req, res) => {
   let optionContent = req.body.optionContent;
   let questionId = req.params.questionId;
   const myOption = await QAnswerOptions.update(
@@ -50,7 +51,7 @@ router.patch("/:questionId", async (req, res) => {
 
 // Route to add the correct Option in the QAnswerOptions Table
 
-router.patch("/addAnswer/:questionId", async (req, res) => {
+router.patch("/addAnswer/:questionId", verifyToken(), async (req, res) => {
   let questionId = req.params.questionId;
   let correctAnswer = req.body.correctAnswer;
   const myOption = await QAnswerOptions.update(
@@ -61,7 +62,7 @@ router.patch("/addAnswer/:questionId", async (req, res) => {
 
 });
 
-router.delete("/:optionId", async (req, res) => {
+router.delete("/:optionId", verifyToken(), async (req, res) => {
   let optionId = req.params.optionId;
   const requestId = await QAnswerOptions.destroy({
     where: { id: optionId },
