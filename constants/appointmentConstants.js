@@ -1,0 +1,3 @@
+module.exports = {
+  APPOINTMENT_BOOKED: "APPOINTMENT BOOKED",
+};
