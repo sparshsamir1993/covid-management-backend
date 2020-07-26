@@ -25,6 +25,8 @@ const corsOptions = {
     "http://localhost:3000",
     "http://localhost:5050",
     "*",
+    "https://covid-management-web-stage.herokuapp.com/*",
+    "https://covid-management-web-stage.herokuapp.com",
   ],
   credentials: true,
   exposedHeaders: [
