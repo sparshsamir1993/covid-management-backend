@@ -22,9 +22,9 @@ services:
     restart: always
     container_name: covidManagementDB
     environment:
-      MYSQL_ROOT_PASSWORD: c8515426
-      MYSQL_DATABASE: heroku_96499aec746dc87
-      MYSQL_PASSWORD: c8515426
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3307:3306"
     volumes:
