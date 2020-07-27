@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   api:
-    image: covid-management:prod
+    image: covid-management:prod-${PROD_VERSION}
     build:
       context: .
       target: prod
