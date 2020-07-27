@@ -12,7 +12,7 @@ services:
     ports:
       - "5050:5050"
     environment:
-      - REDIS_URL=redis://cache
+      - REDIS_URL=redis://h:p703e2fe2b54c82e5f6942bde8953ff04ba680015146fa37dc9aaa12b6351cf1c@ec2-3-226-62-137.compute-1.amazonaws.com:26109
     depends_on:
       - db
       - redis
@@ -22,9 +22,9 @@ services:
     restart: always
     container_name: covidManagementDB
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: covidManagementDB
-      MYSQL_PASSWORD: example
+      MYSQL_ROOT_PASSWORD: c8515426
+      MYSQL_DATABASE: heroku_96499aec746dc87
+      MYSQL_PASSWORD: c8515426
     ports:
       - "3307:3306"
     volumes:
