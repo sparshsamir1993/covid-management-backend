@@ -38,6 +38,7 @@ router.get("/getResponse", verifyToken(), async (req, res) => {
 
 router.post("/addResponse", verifyToken(), async (req, res) => {
   const userAnswers = req.body.userAnswers;
+  console.log(userAnswers);
   const userId = req.body.userId;
   const myQuestions = await Question.findAll().catch(errHandler);
   for (x in userAnswers) {
@@ -48,9 +49,13 @@ router.post("/addResponse", verifyToken(), async (req, res) => {
       isOptionCorrect: false,
     }).catch(errHandler);
     let question = myQuestions.filter((question) => question.id == x)[0];
-    let { correctOptionId } = question;
-    if (correctOptionId === myUserResponse.optionId) {
-      await myUserResponse.update({ isOptionCorrect: true }).catch(errHandler);
+    if (question) {
+      let { correctOptionId } = question;
+      if (correctOptionId === myUserResponse.optionId) {
+        await myUserResponse
+          .update({ isOptionCorrect: true })
+          .catch(errHandler);
+      }
     }
   }
   checkForCovid(res);
