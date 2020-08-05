@@ -5,7 +5,7 @@ const Appointment = require("../../../models/appointment");
 const Hospital = require("../../../models/hospital");
 const verifyToken = require("../../../middlewares/verifyToken");
 const {
-  APPOINTMENT_BOOKED,
+  APPOINTMENT_CONFIRMED,
 } = require("../../../constants/appointmentConstants");
 
 Appointment.belongsTo(User, {
@@ -72,7 +72,7 @@ router.post("/book", verifyToken(), async (req, res, next) => {
         {
           userId,
           hospitalId,
-          appointmentStatus: APPOINTMENT_BOOKED,
+          appointmentStatus: APPOINTMENT_CONFIRMED,
           appointmentDate,
           appointmentTime,
         },
