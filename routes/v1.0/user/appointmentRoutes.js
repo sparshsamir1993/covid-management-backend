@@ -59,6 +59,7 @@ router.get("/userAppointments", verifyToken(), async (req, res, next) => {
           required: true,
         },
       ],
+      order: [["appointmentDate"], ["appointmentTime"]],
     });
     let apList = await Promise.all(
       userAppointmentList.map(async (ap) => {
@@ -68,6 +69,30 @@ router.get("/userAppointments", verifyToken(), async (req, res, next) => {
     );
     console.log(apList);
     res.status(200).send(apList);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.get("/appointmentDetail", verifyToken(), async (req, res, next) => {
+  let { appointmentId } = req.query;
+  try {
+    const appointment = await Appointment.findOne({
+      where: { id: appointmentId },
+      include: [
+        {
+          model: Hospital,
+          as: "hospital",
+          required: true,
+        },
+      ],
+    });
+    let apTime = appointment.dataValues.appointmentTime;
+    res.status(200).send({
+      ...appointment.dataValues,
+      appointmentTime: apTime.split(":")[0],
+    });
   } catch (err) {
     console.log(err);
     res.sendStatus(500);

@@ -89,6 +89,30 @@ router.post("/book", verifyToken(), async (req, res, next) => {
   }
 });
 
+router.put(
+  "/updateAppointmentStatus",
+  verifyToken(),
+  async (req, res, next) => {
+    try {
+      console.log(req.body);
+      let { appointmentId, appointmentStatus } = req.body;
+      const updatedAppointment = await Appointment.update(
+        { appointmentStatus },
+        { where: { id: appointmentId } }
+      );
+      console.log(updatedAppointment);
+      if (updatedAppointment[0] > 0) {
+        res.sendStatus(200);
+      } else {
+        res.sendStatus(404);
+      }
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  }
+);
+
 const createAppointment = async (data, req, res) => {
   let {
     userId,
