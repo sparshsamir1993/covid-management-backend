@@ -2,17 +2,17 @@ version: "3.8"
 
 services:
   api:
-    image: covid-management:dev
+    image: covid-management:prod-${PROD_VERSION}
     build:
       context: .
-      target: dev
+      target: prod
     volumes:
       - "./:/app"
       - "/app/node_modules"
     ports:
       - "5050:5050"
     environment:
-      - REDIS_URL=redis://cache
+      - REDIS_URL=${REDIS_URL}
     depends_on:
       - db
       - redis
@@ -22,9 +22,9 @@ services:
     restart: always
     container_name: covidManagementDB
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: covidManagementDB
-      MYSQL_PASSWORD: example
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3307:3306"
     volumes:

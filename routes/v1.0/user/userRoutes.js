@@ -62,7 +62,7 @@ router.post("/login", (req, res, next) => {
           message: "user found & logged in",
           refreshToken,
           id: user.id,
-
+          email: user.email,
         });
       });
     }
