@@ -29,6 +29,7 @@
     "express": "^4.17.1",
     "express-mung": "^0.5.1",
     "geolib": "^3.3.1",
+    "jest": "^26.3.0",
     "mysql2": "^2.1.0",
     "nodemon": "^2.0.4",
     "passport": "^0.4.1",
@@ -37,6 +38,7 @@
     "redis": "^3.0.2",
     "sequelize": "^5.21.12",
     "sequelize-cli": "^5.5.1",
+    "sequelize-mock": "^0.10.2",
     "uuid": "^8.1.0"
   }
 }
