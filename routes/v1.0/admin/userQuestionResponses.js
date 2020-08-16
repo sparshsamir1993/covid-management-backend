@@ -102,7 +102,7 @@ router.patch("/", verifyToken(), async (req, res, next) => {
         console.log(optionId);
         if (correctOptionId === optionId) {
             const n = await updateddata.update({ isOptionCorrect: true }).catch(errHandler);
-            console.log("CHanging here");
+            console.log("Changing here");
             console.log(n);
         }
     }

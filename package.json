@@ -4,7 +4,7 @@
   "description": "final year capstone",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "server": "nodemon -r dotenv/config index.js"
   },
   "repository": {
