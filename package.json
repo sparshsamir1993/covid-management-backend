@@ -4,7 +4,7 @@
   "description": "final year capstone",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "server": "nodemon -r dotenv/config index.js"
   },
   "repository": {

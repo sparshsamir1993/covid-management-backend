@@ -6,7 +6,7 @@ describe("sequelize mock test", () => {
       .getUserEmail(2)
       .then((email) => {
         console.log(email);
-        expect(email).toMatch("smacs123@gmail.com");
+        expect(email).toMatch("smac123@gmail.com");
         done();
       })
       .catch(done);

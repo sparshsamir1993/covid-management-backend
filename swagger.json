@@ -1,0 +1,133 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Covid Backend API",
+        "version": 1
+    },
+    "host": "CovidBackEnd.swagger.io",
+    "servers": {
+        "url": "http://localhost:5050"
+    },
+    "schemes": [
+        "https",
+        "http"
+    ],
+    "paths": {
+        "/api/v1/user/signup": {
+            "post": {
+                "tags": [
+                    "User sign up"
+                ],
+                "summary": "Add a new user to the database",
+                "description": "",
+                "operationId": "addUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "responses": [
+                    {
+                        "405": {
+                            "description": "Invalid input"
+                        },
+                        "default": {
+                            "description": "Error"
+                        },
+                        "200": {
+                            "description": "User Created"
+                        },
+                        "403": {
+                            "description": "forbidden"
+                        }
+                    }
+                ],
+                "components": {
+                    "schemas": {
+                        "User": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/login": {
+            "post": {
+                "tags": [
+                    "User Login "
+                ],
+                "summary": "User Login",
+                "description": "",
+                "operationId": "Login",
+                "consumes": [
+                    "application/json"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "responses": [
+                    {
+                        "405": {
+                            "description": "Invalid input"
+                        },
+                        "default": {
+                            "description": "Error"
+                        },
+                        "200": {
+                            "description": "Login Successful"
+                        },
+                        "403": {
+                            "description": "forbidden"
+                        }
+                    }
+                ],
+                "components": {
+                    "schemas": {
+                        "User": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "securitySchemes": {
+                        "bearerAuth": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT"
+                        }
+                    }
+                },
+                "security": {
+                    "bearerAuth": []
+                }
+            }
+        }
+    }
+}

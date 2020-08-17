@@ -1,6 +1,5 @@
 var sequelizeMock = require('sequelize-mock');
 var dbMock = new sequelizeMock();
-var QAnswerOptionsMock = require('../__mocks__/qansweroption_mock');
 
 
 var QuestionMock = dbMock.define('Question', {
@@ -11,18 +10,40 @@ var QuestionMock = dbMock.define('Question', {
     updatedAt: new Date(),
     correctOptionId: 1
 });
-//QuestionMock.hasMany(QAnswerOptionsMock.QAnswerMock);
+
+var QAnswerMock = dbMock.define('QAnswerOptions', {
+
+    optionContent: "Yes",
+    questionid: 1,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+},
+    {
+        optionContent: "No",
+        questionid: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }
+);
+
+
+QuestionMock.belongsTo(QAnswerMock);
 
 
 
-
-let getQuestiondata = () => {
+let getQuestiondata = (id) => {
     return QuestionMock.findOne({
-        where: { id: 2 },
+        where: { questionid: id },
 
-    }).then((question) => {
-        return question
+    }).then(data => {
+        console.log(data.get("QAnswerMock"));
+    }).catch((error) => {
+        console.log(error);
+
     })
+
+    console.log(question.getQAnswerMock());
+    // return question.get("question");
 }
 
 module.exports.getQuestiondata = getQuestiondata;

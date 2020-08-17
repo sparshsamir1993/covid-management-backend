@@ -17,9 +17,7 @@ var QAnswerMock = dbMock.define('QAnswerOptions', {
     }
 );
 
-// QAnswerMock.belongsTo(QuestionMock.QuestionMock, {
-//     as: "question",
-// });
+
 
 
 module.exports.QAnswerMock = QAnswerMock;

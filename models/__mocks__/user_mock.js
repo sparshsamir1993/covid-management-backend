@@ -9,13 +9,11 @@ var UserMock = dbMock.define("User", {
   updatedAt: new Date(),
 });
 
-let getUserEmail = async () => {
-  //console.log(UserMock)
-  //  console.log(userId)
+let getUserEmail = async (userId) => {
   const user = await UserMock.findOne({
-    // where: {
-    //   id: userId,
-    // },
+    where: {
+      id: userId,
+    },
   }).catch((error) => {
     console.log(error);
   });

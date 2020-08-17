@@ -4,6 +4,8 @@ const passport = require("passport");
 const bodyParser = require("body-parser");
 const keys = require("./keys/keys");
 var cors = require("cors");
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 require("./db.js");
 require("./services/passport");
@@ -11,6 +13,7 @@ require("./services/redis-client");
 
 const app = express();
 app.use(bodyParser.json());
+
 
 // app.use(
 //   cookieSession({
@@ -42,7 +45,10 @@ app.use(cors(corsOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/api", require("./routes"));
+let router = require("./routes");
+app.use("/api", router);
+router.use('/api-docs', swaggerUi.serve);
+router.get('/api-docs', swaggerUi.setup(swaggerDocument));
 
 const PORT = process.env.PORT || 5050;
 console.log("on port :: " + PORT);
