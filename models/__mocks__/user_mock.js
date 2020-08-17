@@ -15,10 +15,8 @@ let getUserEmail = async (userId) => {
       id: userId,
     },
   }).catch((error) => {
-    // console.log(error);
+    console.log(error);
   });
-
-  // console.log(user);
   return user.get("email");
 };
 

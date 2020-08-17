@@ -10,39 +10,17 @@ var QuestionMock = dbMock.define('Question', {
     updatedAt: new Date(),
     correctOptionId: 1
 });
-
-var QAnswerMock = dbMock.define('QAnswerOptions', {
-
-    optionContent: "Yes",
-    questionid: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-},
-    {
-        optionContent: "No",
-        questionid: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    }
-);
-
-
-QuestionMock.belongsTo(QAnswerMock);
-
-
-
 let getQuestiondata = (id) => {
-    return QuestionMock.findOne({
+    const question = QuestionMock.findOne({
         where: { questionid: id },
 
-    }).then(data => {
-        console.log(data.get("QAnswerMock"));
     }).catch((error) => {
         console.log(error);
 
     })
+    return question.get("question");
 
-    console.log(question.getQAnswerMock());
+
     // return question.get("question");
 }
 

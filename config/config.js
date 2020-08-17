@@ -12,7 +12,7 @@ module.exports = {
     username: "root",
     password: "password",
     database: "covidManagementDBTest",
-    host: "127.0.0.1",
+    host: "covidManagementDB",
     dialect: "mysql",
     operatorsAliases: false,
   },
