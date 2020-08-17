@@ -1,7 +1,7 @@
 //
 module.exports = {
-  JWT_EXPIRY: 10,
-  REFRESH_EXPIRY: 60 * 60 * 60 * 60,
+  JWT_EXPIRY: 60 * 15, // 15 minutes
+  REFRESH_EXPIRY: 60 * 60 * 60 * 60, // 150 days
   AUTH_TOKEN_HEADER: "authorization",
   REFRESH_TOKEN_HEADER: "refresh-token",
   ADMIN_ROLE: "ADMIN",

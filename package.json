@@ -4,7 +4,10 @@
   "description": "final year capstone",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "cross-env NODE_ENV=test jest --collect-coverage --testTimeout=10000 --detectOpenHandles --runInBand --forceExit",
+    "migrate": "npx sequelize-cli db:migrate",
+    "migrate:reset": "npx sequelize-cli db:migrate:undo:all && npm run migrate",
+    "pretest": "cross-env NODE_ENV=test npm run migrate:reset",
     "server": "nodemon -r dotenv/config index.js"
   },
   "repository": {
@@ -32,6 +35,7 @@
     "body-parser": "^1.19.0",
     "cookie-session": "^1.4.0",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-mung": "^0.5.1",
@@ -50,5 +54,7 @@
     "swagger-ui-express": "^4.1.4",
     "uuid": "^8.1.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "redis-mock": "^0.51.0"
+  }
 }

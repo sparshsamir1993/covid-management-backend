@@ -47,3 +47,5 @@ app.use("/api", require("./routes"));
 const PORT = process.env.PORT || 5050;
 console.log("on port :: " + PORT);
 app.listen(PORT);
+
+module.exports = app;

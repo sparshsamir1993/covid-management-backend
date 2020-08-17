@@ -22,5 +22,9 @@ module.exports = {
       Example:
       return queryInterface.dropTable('users');
     */
+    return Promise.all([
+      queryInterface.dropTable("Patients"),
+      queryInterface.dropTable("HospitalAdmins"),
+    ]);
   },
 };

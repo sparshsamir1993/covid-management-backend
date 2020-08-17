@@ -1,14 +1,11 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn(
-      "Questions",
-      "correctOptionId", {
+    return queryInterface.addColumn("Questions", "correctOptionId", {
       type: Sequelize.Sequelize.DataTypes.INTEGER,
       allowNull: true,
-    },
-    );
+    });
   },
 
   down: (queryInterface, Sequelize) => {
@@ -19,5 +16,12 @@ module.exports = {
       Example:
       return queryInterface.dropTable('users');
     */
-  }
+    return queryInterface.sequelize.transaction((t) => {
+      return Promise.all([
+        queryInterface.removeColumn("Questions", "correctOptionId", {
+          transaction: t,
+        }),
+      ]);
+    });
+  },
 };

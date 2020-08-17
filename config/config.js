@@ -10,9 +10,9 @@ module.exports = {
   },
   test: {
     username: "root",
-    password: "example",
-    database: "covidManagementDB",
-    host: "covidManagementDB",
+    password: "password",
+    database: "covidManagementDBTest",
+    host: "127.0.0.1",
     dialect: "mysql",
     operatorsAliases: false,
   },
