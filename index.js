@@ -53,3 +53,5 @@ router.get('/api-docs', swaggerUi.setup(swaggerDocument));
 const PORT = process.env.PORT || 5050;
 console.log("on port :: " + PORT);
 app.listen(PORT);
+
+module.exports = app;

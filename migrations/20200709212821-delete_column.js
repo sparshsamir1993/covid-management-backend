@@ -1,13 +1,14 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn("QAnswerOptions",
-      "correctAnswer"
-    );
+    return queryInterface.removeColumn("QAnswerOptions", "correctAnswer");
   },
 
   down: (queryInterface, Sequelize) => {
-
-  }
+    return queryInterface.addColumn("QAnswerOptions", "correctAnswer", {
+      type: Sequelize.Sequelize.DataTypes.INTEGER,
+      allowNull: true,
+    });
+  },
 };
