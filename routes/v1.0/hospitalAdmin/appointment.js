@@ -68,6 +68,7 @@ router.post("/book", verifyToken(), async (req, res, next) => {
       name,
     };
     if (!isNewUser) {
+      console.log(appointmentDate);
       const newAppointment = await createAppointment(
         {
           userId,
@@ -142,7 +143,7 @@ const createAppointment = async (data, req, res) => {
       userId,
       hospitalId,
       appointmentStatus,
-      appointmentDate,
+      appointmentDate: new Date(appointmentDate).setHours(0, 0, 0, 0),
       appointmentTime,
     });
     return newAppointment;
