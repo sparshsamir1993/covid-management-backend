@@ -6,11 +6,9 @@ const keys = require("./keys/keys");
 var cors = require("cors");
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
-
 require("./db.js");
 require("./services/passport");
 require("./services/redis-client");
-
 const app = express();
 app.use(bodyParser.json());
 

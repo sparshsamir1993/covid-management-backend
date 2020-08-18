@@ -8,7 +8,7 @@ const redisClient = require("../../../services/redis-client");
 const Question = require("../../../models/Question");
 const HospitalAdmin = require("../../../models/hospitalAdmin");
 const Hospital = require("../../../models/hospital");
-const { validate } = require("../../../middlewares");
+const { body, validationResult, check } = require('express-validator');
 
 
 HospitalAdmin.belongsTo(Hospital, {
@@ -24,7 +24,21 @@ const errHandler = (err) => {
   console.log("Error :: " + err);
 };
 
-router.post("/login", (req, res, next) => {
+router.post("/login", [(req, res, next) => {
+  console.log("in validation")
+  const { email, password } = req.body;
+  check(email).isEmpty()
+  check(password).isEmpty()
+  const errors = validationResult(req);
+  console.log(errors)
+  if (!errors.isEmpty()) {
+    return res.status(204).send("error")
+  }
+  else {
+    next()
+  }
+}], (req, res, next) => {
+  console.log("inside next")
   passport.authenticate("login", async (err, users, info) => {
     if (err) {
       console.error(`error ${err}`);
@@ -71,7 +85,7 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
-router.post("/signup", validate(), (req, res, next) => {
+router.post("/signup", (req, res, next) => {
   console.log(req.body);
   passport.authenticate("register", (err, user, info) => {
     // res.status(403).send(info.message);
