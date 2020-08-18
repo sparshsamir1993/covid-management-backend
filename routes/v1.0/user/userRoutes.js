@@ -8,6 +8,8 @@ const redisClient = require("../../../services/redis-client");
 const Question = require("../../../models/Question");
 const HospitalAdmin = require("../../../models/hospitalAdmin");
 const Hospital = require("../../../models/hospital");
+const { validate } = require("../../../middlewares");
+
 
 HospitalAdmin.belongsTo(Hospital, {
   as: "hospital",
@@ -69,7 +71,7 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
-router.post("/signup", (req, res, next) => {
+router.post("/signup", validate(), (req, res, next) => {
   console.log(req.body);
   passport.authenticate("register", (err, user, info) => {
     // res.status(403).send(info.message);
