@@ -27,7 +27,7 @@ router.get("/options", verifyToken(), async (req, res) => {
         // required: true,
       },
     ],
-  });
+  }).catch(errHandler);
   console.log(myoptions);
   res.status(200).send(myoptions);
 });
@@ -36,6 +36,7 @@ router.post("/", verifyToken(), async (req, res) => {
   let text = req.body.question;
   const myquestion = await Question.create({ question: text });
   res.status(200).send(myquestion);
+  console.log(myquestion);
 });
 
 router.get("/:id", verifyToken(), async (req, res) => {
@@ -57,6 +58,16 @@ router.patch("/", verifyToken(), async (req, res) => {
     { where: { id: questionid } }
   ).catch(errHandler);
   res.status(200).send(myquestion);
+});
+
+router.patch("/addCorrectOption", verifyToken(), async (req, res) => {
+  let correctOption = req.body.correctOptionId;
+  let questionId = req.body.questionId;
+  const myAddedData = await Question.update(
+    { correctOptionId: correctOption },
+    { where: { id: questionId } }
+  ).catch(errHandler);
+  res.status(200).send(myAddedData);
 });
 
 router.delete("/:id", verifyToken(), async (req, res) => {

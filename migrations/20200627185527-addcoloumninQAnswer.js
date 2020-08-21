@@ -14,6 +14,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeColoumn("QAnswerOptions", "questionId");
+    return queryInterface.removeColumn("QAnswerOptions", "questionId");
   },
 };

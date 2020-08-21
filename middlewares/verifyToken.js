@@ -10,13 +10,16 @@ module.exports = () => {
     const auth = req.headers[CONSTANTS.auth.AUTH_TOKEN_HEADER]
       ? req.headers[CONSTANTS.auth.AUTH_TOKEN_HEADER].split(" ")
       : undefined;
-
+    console.log(auth);
     if (auth && auth.length > 1) {
       const token = auth[1];
+      // console.log("reresh token is --- " + refreshToken);
+      console.log(" token is --- " + token);
 
       try {
         jwt.verify(token, config.secret);
         const refreshToken = req.headers[CONSTANTS.auth.REFRESH_TOKEN_HEADER];
+
         res.set("token", `JWT ${token}`);
         res.set(CONSTANTS.auth.REFRESH_TOKEN_HEADER, `${refreshToken}`);
         return next();
@@ -26,6 +29,7 @@ module.exports = () => {
         if (err.name === "TokenExpiredError") {
           const refreshToken = req.headers[CONSTANTS.auth.REFRESH_TOKEN_HEADER];
           console.log("reresh token is --- " + refreshToken);
+          console.log(" token is --- " + token);
 
           try {
             const decodedRT = jwt.verify(refreshToken, config.secret);

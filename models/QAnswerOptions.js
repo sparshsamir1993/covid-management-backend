@@ -5,5 +5,6 @@ const Options = sequelize.define("QAnswerOptions", {
   questionId: Sequelize.INTEGER,
   createdAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
+
 });
 module.exports = Options;

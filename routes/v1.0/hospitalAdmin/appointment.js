@@ -5,7 +5,7 @@ const Appointment = require("../../../models/appointment");
 const Hospital = require("../../../models/hospital");
 const verifyToken = require("../../../middlewares/verifyToken");
 const {
-  APPOINTMENT_BOOKED,
+  APPOINTMENT_CONFIRMED,
 } = require("../../../constants/appointmentConstants");
 
 Appointment.belongsTo(User, {
@@ -72,7 +72,7 @@ router.post("/book", verifyToken(), async (req, res, next) => {
         {
           userId,
           hospitalId,
-          appointmentStatus: APPOINTMENT_BOOKED,
+          appointmentStatus: APPOINTMENT_CONFIRMED,
           appointmentDate,
           appointmentTime,
         },
@@ -88,6 +88,30 @@ router.post("/book", verifyToken(), async (req, res, next) => {
     console.log(err);
   }
 });
+
+router.put(
+  "/updateAppointmentStatus",
+  verifyToken(),
+  async (req, res, next) => {
+    try {
+      console.log(req.body);
+      let { appointmentId, appointmentStatus } = req.body;
+      const updatedAppointment = await Appointment.update(
+        { appointmentStatus },
+        { where: { id: appointmentId } }
+      );
+      console.log(updatedAppointment);
+      if (updatedAppointment[0] > 0) {
+        res.sendStatus(200);
+      } else {
+        res.sendStatus(404);
+      }
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  }
+);
 
 const createAppointment = async (data, req, res) => {
   let {
@@ -118,7 +142,7 @@ const createAppointment = async (data, req, res) => {
       userId,
       hospitalId,
       appointmentStatus,
-      appointmentDate,
+      appointmentDate: new Date(appointmentDate).setHours(0, 0, 0, 0),
       appointmentTime,
     });
     return newAppointment;

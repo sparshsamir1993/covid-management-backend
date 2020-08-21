@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -6,15 +6,13 @@ module.exports = {
       queryInterface.removeColumn("QAnswerOptions", "option1"),
       queryInterface.removeColumn("QAnswerOptions", "option2"),
 
-      queryInterface.addColumn("QAnswerOptions", "options",
-        {
-          type: Sequelize.STRING
-        }
-      ),
+      queryInterface.addColumn("QAnswerOptions", "options", {
+        type: Sequelize.STRING,
+      }),
     ]);
   },
 
   down: (queryInterface, Sequelize) => {
-    queryInterface.removeColumn("QAnswerOptions", "options")
-  }
+    return Promise.all([]);
+  },
 };
