@@ -10,7 +10,6 @@ const HospitalAdmin = require("../../../models/hospitalAdmin");
 const Hospital = require("../../../models/hospital");
 const { validate } = require("../../../middlewares");
 
-
 HospitalAdmin.belongsTo(Hospital, {
   as: "hospital",
   foreignKey: "hospitalId",
@@ -71,7 +70,7 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
-router.post("/signup", validate(), (req, res, next) => {
+router.post("/signup", validate, (req, res, next) => {
   console.log(req.body);
   passport.authenticate("register", (err, user, info) => {
     // res.status(403).send(info.message);
