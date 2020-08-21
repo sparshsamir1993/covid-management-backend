@@ -8,8 +8,8 @@ const redisClient = require("../../../services/redis-client");
 const Question = require("../../../models/Question");
 const HospitalAdmin = require("../../../models/hospitalAdmin");
 const Hospital = require("../../../models/hospital");
-const { body, validationResult, check } = require('express-validator');
-
+const { body, validationResult, check, header } = require('express-validator');
+const CONSTANTS = require("../../../constants");
 
 HospitalAdmin.belongsTo(Hospital, {
   as: "hospital",
@@ -24,15 +24,15 @@ const errHandler = (err) => {
   console.log("Error :: " + err);
 };
 
-router.post("/login", [(req, res, next) => {
+router.post("/login", [async (req, res, next) => {
   console.log("in validation")
   const { email, password } = req.body;
-  check(email).isEmpty()
-  check(password).isEmpty()
+  await check(email).isEmpty().run(req)
+  await check(password).isEmpty(req)
   const errors = validationResult(req);
   console.log(errors)
   if (!errors.isEmpty()) {
-    return res.status(204).send("error")
+    return res.status(404).send("error")
   }
   else {
     next()
@@ -85,7 +85,20 @@ router.post("/login", [(req, res, next) => {
   })(req, res, next);
 });
 
-router.post("/signup", (req, res, next) => {
+router.post("/signup", [async (req, res, next) => {
+  const { email, password } = res.body
+  await check(email).isEmpty().run(req)
+  await check(email).isEmail().run(req)
+  await check(password).isEmpty().run(req)
+  const errors = validationResult(req);
+  console.log(errors)
+  if (!errors.isEmpty()) {
+    return res.status(404).send("error")
+  }
+  else {
+    next()
+  }
+}], (req, res, next) => {
   console.log(req.body);
   passport.authenticate("register", (err, user, info) => {
     // res.status(403).send(info.message);
@@ -111,8 +124,25 @@ const {
   REFRESH_EXPIRY,
   JWT_EXPIRY,
 } = require("../../../constants/authConstants");
-
-router.patch("/update", verifyToken(), async (req, res, next) => {
+router.patch("/update", [async (req, res, next) => {
+  console.log("in update request")
+  const authToken = req.headers[CONSTANTS.auth.AUTH_TOKEN_HEADER]
+    ? req.headers[CONSTANTS.auth.AUTH_TOKEN_HEADER].split(" ")
+    : undefined;
+  console.log(authToken[1])
+  await check(authToken[1]).isEmpty().run(req);
+  //await check(authToken[1]).isJWT().run(req);
+  // await header(authToken[1]).trim().isJWT().run(req);
+  const errors = validationResult(req);
+  console.log(errors)
+  if (!errors.isEmpty()) {
+    return res.status(404).send("error")
+  }
+  else {
+    next()
+    console.log("everything is ok")
+  }
+}], verifyToken(), async (req, res, next) => {
   let user = await jwtAuth(req, res, next);
   if (user) {
     const userStored = await User.findOne({
