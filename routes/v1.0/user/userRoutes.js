@@ -97,9 +97,9 @@ router.post(
   "/signup",
   [
     async (req, res, next) => {
-      const { email, password } = res.body;
+      const { email, password } = req.body;
       await check(email).isEmpty().run(req);
-      await check(email).isEmail().run(req);
+      await check(email).isEmail().run(req, { dryRun: true });
       await check(password).isEmpty().run(req);
       const errors = validationResult(req);
       console.log(errors);
